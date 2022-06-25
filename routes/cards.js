@@ -1,9 +1,13 @@
 const express = require("express");
-const _ = require("lodash");
-const { Card, validateCard } = require("../models/card");
-const cm = require("../models/cards");
 const router = express.Router();
+const cards = require("../controllers/cards");
 
-router.post("/", cm.addCard);
+router.get("/cards", (req, res) => {
+  res.send("<h1>Cards page</h1>");
+});
+
+router.post("/", cards.addCard);
+router.get("/", cards.findCard);
+router.put("/", cards.setCard);
 
 module.exports = router;

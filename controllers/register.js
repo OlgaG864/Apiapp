@@ -1,7 +1,6 @@
-const database = require("../database");
+const database = require("./databse");
 const joi = require("@hapi/joi");
 const bcrypt = require("bcrypt");
-const auth = require("../middleware/auth");
 
 module.exports = {
   addCustomer: async function (req, res, next) {
@@ -31,6 +30,7 @@ module.exports = {
         reqBody.last_name,
         reqBody.email,
         reqBody.password,
+        reqBody.operative,
       ]);
     } catch (error) {
       console.log(error);
@@ -38,16 +38,5 @@ module.exports = {
     }
 
     res.send(`${reqBody.first_name} added successfully`);
-  },
-
-  findCustomer: async function (req, res) {
-    const sql = "SELECT FROM customers customers.id WHERE email=?;";
-
-    try {
-      const result = await database.query(sql); //rows and fields
-      res.send(result[0]);
-    } catch (err) {
-      console.log(err);
-    }
   },
 };

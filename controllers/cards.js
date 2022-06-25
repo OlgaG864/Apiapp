@@ -1,4 +1,4 @@
-const database = require("../database");
+const database = require("./databse");
 const joi = require("@hapi/joi");
 
 module.exports = {
@@ -41,5 +41,43 @@ module.exports = {
     }
 
     res.send(`${reqBody.name} added successfully`);
+  },
+
+  findCard: async function (req, res) {
+    const sql = "SELECT * FROM bussiness WHERE bussiness.id=?;";
+    try {
+      const result = await database.query(sql, [
+        reqBody.customer_id,
+        reqBody.name,
+        reqBody.description,
+        reqBody.address,
+        reqBody.phone,
+        reqBody.image,
+      ]);
+    } catch (error) {
+      console.log(error);
+    }
+  },
+
+  setCard: async function (req, res) {
+    const sql = "UPDATE bussines SET VALUES(?,?,?,?,?,?) WHERE id=?";
+
+    try {
+      const result = await database.query(sql); //rows and fields
+      res.send(result[0]);
+    } catch (err) {
+      console.log(err);
+    }
+  },
+
+  deleteCard: async function (req, res) {
+    const sql = "DELETE FROM bussines WHERE id=?";
+
+    try {
+      const result = await database.query(sql); //rows and fields
+      res.send(result[0]);
+    } catch (err) {
+      console.log(err);
+    }
   },
 };

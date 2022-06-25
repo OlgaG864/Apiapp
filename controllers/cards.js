@@ -15,6 +15,7 @@ module.exports = {
         .required()
         .regex(/^0[2-9]\d{7,8}$/),
       customer_id: joi.number().required(),
+      image: joi.string().min(11).max(200),
     });
     const { error } = schema.validate(reqBody);
 
@@ -23,9 +24,9 @@ module.exports = {
     }
 
     const sql =
-      "INSERT INTO bussines(customer_id,name,description,address,phone)" +
+      "INSERT INTO bussines(customer_id,name,description,address,phone,image)" +
       "WHERE (bussines.customer_id=customers.id)" +
-      " VALUES(?,?,?,?,?);";
+      " VALUES(?,?,?,?,?,?);";
 
     try {
       const result = await database.query(sql, [
@@ -34,6 +35,7 @@ module.exports = {
         reqBody.description,
         reqBody.address,
         reqBody.phone,
+        reqBody.image,
       ]);
     } catch (error) {
       console.log(error);
@@ -44,7 +46,7 @@ module.exports = {
   },
 
   findCard: async function (req, res) {
-    const sql = "SELECT * FROM bussiness WHERE bussiness.id=?;";
+    const sql = "SELECT * FROM bussines WHERE bussines.id=?;";
     try {
       const result = await database.query(sql, [
         reqBody.customer_id,

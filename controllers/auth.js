@@ -21,7 +21,7 @@ module.exports = {
       return;
     }
 
-    const sql = "SELECT * FROM users WHERE email=?;";
+    const sql = "SELECT * FROM customers WHERE email=?;";
 
     try {
       const result = await database.query(sql, [reqBody.email]);

@@ -61,25 +61,68 @@ module.exports = {
     }
   },
 
-  setCard: async function (req, res) {
+  setCard: async function (req, res, next) {
+    const reqBody = req.body;
+    const schema = joi
+      .object({
+        name: joi.string().required().min(2).max(200),
+        address: joi.string().required().min(2).max(200),
+        description: joi.string().required().max(300),
+        phone: joi
+          .string()
+          .min(9)
+          .max(10)
+          .required()
+          .regex(/^0[2-9]\d{7,8}$/),
+        customer_id: joi.number().required(),
+        image: joi.string().min(11).max(200),
+      })
+      .min(1);
+
+    const { error, value } = schema.validate(reqBody);
+    if (error) {
+      res.status(400).send(`error update card: ${error}`);
+      return;
+    }
+
+    const keys = Object.keys(value);
+    const values = Object.values(value);
+
+    const fields = keys.map((key) => `${key}=?`).join(",");
+    values.push(req.params.id);
+
     const sql = "UPDATE bussines SET VALUES(?,?,?,?,?,?) WHERE id=?";
 
     try {
-      const result = await database.query(sql); //rows and fields
-      res.send(result[0]);
+      const result = await database.query(sql, values);
+      res.json(value);
     } catch (err) {
       console.log(err);
+      return;
     }
   },
 
   deleteCard: async function (req, res) {
+    const schema = joi.object({
+      id: joi.number().required(),
+    });
+
+    const { error, value } = schema.validate(req.params);
+    if (error) {
+      res.status(400).send("error delete product");
+      console.log(error.details[0].message);
+      return;
+    }
     const sql = "DELETE FROM bussines WHERE id=?";
 
     try {
-      const result = await database.query(sql); //rows and fields
-      res.send(result[0]);
+      const result = await database.query(sql, [value.id]);
+      res.json({
+        id: value.id,
+      });
     } catch (err) {
-      console.log(err);
+      res.status(400).send("error delete product");
+      console.log(err.message);
     }
   },
 };

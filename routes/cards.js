@@ -7,7 +7,8 @@ router.get("/cards", (req, res) => {
 });
 
 router.post("/", cards.addCard);
-router.get("/", cards.findCard);
-router.put("/", cards.setCard);
+router.get("/:id", cards.findCard);
+router.put("/:id", cards.setCard);
+router.delete("/:id", cards.deleteCard);
 
 module.exports = router;
